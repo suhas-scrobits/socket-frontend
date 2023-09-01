@@ -1,9 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo } from "react";
 
 import "./App.css";
 
 import { io } from "socket.io-client";
 import Chart from "react-apexcharts";
+import { useDispatch, useSelector } from "react-redux";
+import { addChartData, fetchVariableById } from "./redux/variableSlice";
 
 const socket = io("http://localhost:3000", {
   extraHeaders: {
@@ -15,65 +17,80 @@ const socket = io("http://localhost:3000", {
 });
 
 function App() {
-  const [message] = useState("");
-  const [data, setData] = useState([]);
-  const [categories, setCategories] = useState([]);
-  const state = {
-    series: [
-      {
-        name: "Desktops",
-        data: data,
-      },
-    ],
-    options: {
-      chart: {
-        height: 350,
-        type: "line",
-        zoom: {
-          type: "x",
-          enabled: true,
-          autoScaleYaxis: true,
+  const dispatch = useDispatch();
+  const { loading, data, xAxisData, yAxisData } = useSelector(
+    (state) => state.variable
+  );
+
+  const state = useMemo(() => {
+    return {
+      series: [
+        {
+          name: "Desktops",
+          data: yAxisData,
         },
-        toolbar: {
-          autoSelected: "zoom",
+      ],
+      options: {
+        chart: {
+          height: 350,
+          type: "line",
+          zoom: {
+            type: "x",
+            enabled: true,
+            autoScaleYaxis: true,
+          },
+          toolbar: {
+            autoSelected: "zoom",
+          },
+        },
+        dataLabels: {
+          enabled: false,
+        },
+        stroke: {
+          curve: "straight",
+        },
+        title: {
+          text: "Product Trends by Month",
+          align: "left",
+        },
+        grid: {
+          row: {
+            colors: ["#f3f3f3", "transparent"],
+            opacity: 0.5,
+          },
+        },
+        xaxis: {
+          categories: xAxisData,
         },
       },
-      dataLabels: {
-        enabled: false,
-      },
-      stroke: {
-        curve: "straight",
-      },
-      title: {
-        text: "Product Trends by Month",
-        align: "left",
-      },
-      grid: {
-        row: {
-          colors: ["#f3f3f3", "transparent"], // takes an array which will be repeated on columns
-          opacity: 0.5,
-        },
-      },
-      xaxis: {
-        categories: categories,
-      },
-    },
-  };
+    };
+  }, [xAxisData, yAxisData]);
 
   useEffect(() => {
-    socket.on("data", (data) => {
+    if (!data) {
+      dispatch(fetchVariableById());
+    }
+  }, [data, dispatch]);
+
+  useEffect(() => {
+    const handleDataReceived = (data) => {
       console.log(data);
-      setData((values) => [...values, data.value]);
-      setCategories((time) => [...time, data.time]);
-    });
-  }, []);
+      dispatch(addChartData(data));
+    };
+
+    socket.on("data", handleDataReceived);
+
+    // Clean up the event listener when the component unmounts
+    return () => {
+      socket.off("data", handleDataReceived);
+    };
+  }, [dispatch]);
 
   return (
     <>
       <header className="App-header">
-        <h1>Real-Time App</h1>
-        <p>{message}</p>
-
+        {loading ? <p>loading...</p> : null}
+        {data?.name}
         <Chart
           options={state.options}
           series={state.series}
