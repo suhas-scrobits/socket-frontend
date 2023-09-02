@@ -10,7 +10,7 @@ const initialState = {
 };
 
 const headers = {
-  Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NzAsInJvbGUiOjAsIm9yZ0lkIjo0LCJpc1ZlcmlmaWVkIjp0cnVlLCJpYXQiOjE2OTM1NTk4NTMsImV4cCI6MTY5MzY0NjI1M30.Pt4F-68BvnortuoDUreMEULagEgik3Fft2pcVDWE1KU`,
+  Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NzAsInJvbGUiOjAsIm9yZ0lkIjo0LCJpc1ZlcmlmaWVkIjp0cnVlLCJpYXQiOjE2OTM2NDYzNTUsImV4cCI6MTY5MzczMjc1NX0.BHEesk_YpH9sbMqVdMqR611yu5_Mw39tc-x2ezBImy0`,
 };
 
 export const fetchVariableById = createAsyncThunk(

@@ -7,10 +7,11 @@ import Chart from "react-apexcharts";
 import { useDispatch, useSelector } from "react-redux";
 import { addChartData, fetchVariableById } from "./redux/variableSlice";
 
-const socket = io("http://localhost:3000", {
+const socket = io("https://sisai-backend-production.up.railway.app", {
+  path: "/api/socket.io/",
   extraHeaders: {
     Authorization:
-      "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NzAsInJvbGUiOjAsIm9yZ0lkIjo0LCJpc1ZlcmlmaWVkIjp0cnVlLCJpYXQiOjE2OTMyMTI3NzUsImV4cCI6MTY5MzI5OTE3NX0.cykao8KllmKaOFuLxV0fv6M52TiS6mudZAz_5BsA-YU",
+      "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NzAsInJvbGUiOjAsIm9yZ0lkIjo0LCJpc1ZlcmlmaWVkIjp0cnVlLCJpYXQiOjE2OTM2NDYzNTUsImV4cCI6MTY5MzczMjc1NX0.BHEesk_YpH9sbMqVdMqR611yu5_Mw39tc-x2ezBImy0",
   },
   transports: ["websocket"],
   query: "variableId=89",
